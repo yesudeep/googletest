@@ -135,6 +135,12 @@ cc_library(
         ":windows": ["windows_export_all_symbols"],
         "//conditions:default": [],
     }),
+    linkopts = select({
+        ":windows": [],
+        ":freebsd": BSD_LINKOPTS,
+        ":openbsd": BSD_LINKOPTS,
+        "//conditions:default": ["-pthread"],
+    }),
     deps = [":gtest"],
 )
 
