@@ -42,6 +42,11 @@ config_setting(
 )
 
 config_setting(
+    name = "openbsd",
+    constraint_values = ["@bazel_tools//platforms:openbsd"],
+)
+
+config_setting(
     name = "windows",
     constraint_values = ["@bazel_tools//platforms:windows"],
 )
@@ -57,6 +62,11 @@ cc_library(
     hdrs = ["googletest/include/gtest/gtest_prod.h"],
     includes = ["googletest/include"],
 )
+
+BSD_LINKOPTS = [
+    "-pthread",
+    "-lm",
+]
 
 # Google Test including Google Mock
 cc_library(
@@ -100,10 +110,8 @@ cc_library(
     ],
     linkopts = select({
         ":windows": [],
-        ":freebsd": [
-            "-pthread",
-            "-lm",
-        ],
+        ":freebsd": BSD_LINKOPTS,
+        ":openbsd": BSD_LINKOPTS,
         "//conditions:default": ["-pthread"],
     }),
     deps = select({
